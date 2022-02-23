@@ -4,14 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' --fix",
+    "lint:fix": "eslint 'src/*.{ts,tsx,js,jsx}' --fix",
+    "style:check": "prettier --check 'src/**/**/*.{ts,tsx,js,jsx}'",
+    "style:write": "prettier --write 'src/**/*.{ts,tsx,js,jsx}'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "17.0.21",
+    "@typescript-eslint/eslint-plugin": "5.12.1",
+    "@typescript-eslint/parser": "5.12.1",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "8.4.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "5.2.0",
     "git-commit-msg-linter": "4.1.0",
+    "prettier": "2.5.1",
     "typescript": "4.5.5"
   }
 }

@@ -1,0 +1,7 @@
+node_modules
+.vscode
+dist
+build
+coverage
+globalConfig.json
+last-commit-page.txt
