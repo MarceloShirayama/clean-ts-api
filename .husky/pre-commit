@@ -4,3 +4,4 @@
 npm run style:write
 npm run lint:fix
 git add -A
+npm run test:staged
