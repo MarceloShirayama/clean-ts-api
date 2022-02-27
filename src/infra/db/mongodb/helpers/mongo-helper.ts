@@ -7,12 +7,12 @@ export const MongoHelper = {
   async connect(uri: string): Promise<void> {
     this.client = new MongoClient(process.env.MONGO_URL as string)
     await this.client.connect()
-    console.info('Connected successfully to server')
+    console.info('Connected successfully database')
   },
 
   async disconnect(): Promise<void> {
     await this.client.close()
-    console.info('Disconnected successfully from server')
+    console.info('Disconnected successfully database')
   },
 
   getCollection(name: string): Collection {
