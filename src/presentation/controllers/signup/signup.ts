@@ -4,8 +4,8 @@ import {
   AddAccount,
   Controller,
   EmailValidator,
-  httpRequest,
-  httpResponse
+  HttpRequest,
+  HttpResponse
 } from './signup-protocols'
 
 export class SignUpController implements Controller {
@@ -14,7 +14,7 @@ export class SignUpController implements Controller {
     private readonly addAccount: AddAccount
   ) {}
 
-  async handle(httpRequest: httpRequest): Promise<httpResponse> {
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = [
         'name',
