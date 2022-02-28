@@ -71,32 +71,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('SignUp Controller', () => {
-  it('Should return 400 if no param is provided', async () => {
-    const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
-    const httpRequest: any = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const { sut } = makeSut()
-    for (const field of requiredFields) {
-      delete httpRequest.body[field]
-      const httpResponse = await sut.handle(httpRequest)
-      expect(httpResponse.statusCode).toBe(400)
-      expect(httpResponse.body).toEqual(new Error(`Missing param: ${field}`))
-      if (field === 'passwordConfirmation') {
-        httpRequest.body[field] = 'any_password'
-      } else if (field === 'email') {
-        httpRequest.body[field] = 'any_email@mail.com'
-      } else {
-        httpRequest.body[field] = `any_${field}`
-      }
-    }
-  })
-
   it('Should return 400 if password confirmation fails', async () => {
     const { sut } = makeSut()
     const httpRequest = {
