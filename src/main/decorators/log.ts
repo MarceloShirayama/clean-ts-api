@@ -8,14 +8,13 @@ import {
 export class LogControllerDecorator implements Controller {
   constructor(
     private readonly controller: Controller,
-    // TODO: make LogErrorRepository injection mandatory
-    private readonly logErrorRepository?: LogErrorRepository
+    private readonly logErrorRepository: LogErrorRepository
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     const httpResponse = await this.controller.handle(httpRequest)
 
-    if (this.logErrorRepository && httpResponse.statusCode === 500) {
+    if (httpResponse.statusCode === 500) {
       await this.logErrorRepository.logError(httpResponse.body.stack)
     }
 
