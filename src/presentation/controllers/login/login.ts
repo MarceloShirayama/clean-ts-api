@@ -14,10 +14,9 @@ import {
 } from './login-protocols'
 
 export class LoginController implements Controller {
-  // TODO: implement dependency injection mandatory
   constructor(
-    private readonly emailValidator?: EmailValidator,
-    private readonly authentication?: Authentication
+    private readonly emailValidator: EmailValidator,
+    private readonly authentication: Authentication
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -32,12 +31,12 @@ export class LoginController implements Controller {
 
       const { email, password } = httpRequest.body
 
-      const isValid = this.emailValidator?.isValid(email)
+      const isValid = this.emailValidator.isValid(email)
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
 
-      const accessToken = await this.authentication?.auth(email, password)
+      const accessToken = await this.authentication.auth(email, password)
 
       if (!accessToken) {
         return unauthorized()
