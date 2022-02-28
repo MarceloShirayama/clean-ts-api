@@ -95,4 +95,13 @@ describe('LoginController', () => {
 
     expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
   })
+
+  it('Should return 401 if invalid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce(null)
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse.statusCode).toBe(401)
+  })
 })
