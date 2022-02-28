@@ -1,4 +1,3 @@
-import { Authentication } from '../../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import {
   badRequest,
@@ -6,11 +5,12 @@ import {
   unauthorized
 } from '../../helpers/http-helper'
 import {
+  Authentication,
   Controller,
   EmailValidator,
   HttpRequest,
   HttpResponse
-} from '../../protocols'
+} from './login-protocols'
 
 export class LoginController implements Controller {
   // TODO: implement dependency injection mandatory
