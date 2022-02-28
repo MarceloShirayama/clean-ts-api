@@ -115,4 +115,14 @@ describe('LoginController', () => {
       body: new Error('Internal server error')
     })
   })
+
+  it('Should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      body: { accessToken: 'any_token' }
+    })
+  })
 })
