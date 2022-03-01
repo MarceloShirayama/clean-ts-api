@@ -1,3 +1,4 @@
+import { AuthenticationModel } from '../../../domain/usecases/authentication'
 import { LoadAccountByEmailRepository } from '../../protocols/load-account-by-email-repository'
 import { AccountModel } from '../add-account/db-add-account-protocols'
 import { DbAuthentication } from './db-authentication'
@@ -12,6 +13,11 @@ const makeFakeAccount = (): AccountModel => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'
+})
+
+const makeFakeAuthenticate = (): AuthenticationModel => ({
+  email: makeFakeAccount().email,
+  password: makeFakeAccount().password
 })
 
 const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
@@ -39,11 +45,19 @@ describe('DbAuthentication UseCase', () => {
 
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
 
-    await sut.auth({
-      email: makeFakeAccount().email,
-      password: makeFakeAccount().password
-    })
+    await sut.auth(makeFakeAuthenticate())
 
     expect(loadSpy).toHaveBeenCalledWith(makeFakeAccount().email)
+  })
+
+  it('Should throw if LoadAccountByEmailRepository throws', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+
+    const promise = sut.auth(makeFakeAuthenticate())
+
+    await expect(promise).rejects.toThrow()
   })
 })
