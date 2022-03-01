@@ -1,10 +1,10 @@
 import { LoginController } from './login'
-import { Authentication, EmailValidator, HttpRequest } from './login-protocols'
+import { Authentication, HttpRequest, Validation } from './login-protocols'
 
 interface SutTypes {
   sut: LoginController
-  emailValidatorStub: EmailValidator
   authenticationStub: Authentication
+  validationStub: Validation
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -13,15 +13,6 @@ const makeFakeRequest = (): HttpRequest => ({
     password: 'any_password'
   }
 })
-
-const makeEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(email: string): boolean {
-      return true
-    }
-  }
-  return new EmailValidatorStub()
-}
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -32,60 +23,23 @@ const makeAuthentication = (): Authentication => {
   return new AuthenticationStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = makeEmailValidator()
+  const validationStub = makeValidation()
   const authenticationStub = makeAuthentication()
-  const sut = new LoginController(emailValidatorStub, authenticationStub)
-  return { sut, emailValidatorStub, authenticationStub }
+  const sut = new LoginController(authenticationStub, validationStub)
+  return { sut, authenticationStub, validationStub }
 }
 
 describe('LoginController', () => {
-  it('Should return 400 if no param is provided', async () => {
-    const requiredFields = ['email', 'password']
-    const { sut } = makeSut()
-
-    for (const field of requiredFields) {
-      const httpRequest = makeFakeRequest()
-      delete httpRequest.body[field]
-      const httpResponse = await sut.handle(httpRequest)
-      expect(httpResponse.statusCode).toBe(400)
-      expect(httpResponse.body).toEqual(new Error(`Missing param: ${field}`))
-      httpRequest.body[field] = `any_${field}`
-    }
-  })
-
-  it('Should call EmailValidator with correct email', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-
-    await sut.handle(makeFakeRequest())
-
-    expect(isValidSpy).toHaveBeenCalledWith(makeFakeRequest().body.email)
-  })
-
-  it('Should return 400 if an invalid email is provided', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-
-    const httpResponse = await sut.handle(makeFakeRequest())
-
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Invalid param: email'))
-  })
-
-  it('Should return 500 if EmailValidator throws', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-      throw new Error()
-    })
-    const httpResponse = await sut.handle(makeFakeRequest())
-
-    expect(httpResponse).toEqual({
-      statusCode: 500,
-      body: new Error('Internal server error')
-    })
-  })
-
   it('Should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
@@ -123,6 +77,29 @@ describe('LoginController', () => {
     expect(httpResponse).toEqual({
       statusCode: 200,
       body: { accessToken: 'any_token' }
+    })
+  })
+
+  it('Should call Validation with correct value', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+
+    await sut.handle(makeFakeRequest())
+
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
+  })
+
+  it('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new Error('Missing param: any_field'))
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      body: new Error('Missing param: any_field')
     })
   })
 })
