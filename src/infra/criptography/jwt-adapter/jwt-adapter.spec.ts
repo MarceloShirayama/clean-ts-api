@@ -14,4 +14,15 @@ describe('Jwt Adapter', () => {
 
     expect(signSpy).toHaveBeenCalledWith({ id: 'any_id' }, 'secret')
   })
+
+  it('Should return a token on sign success', async () => {
+    const sut = makeSut()
+    jest
+      .spyOn(jwt, 'sign')
+      .mockImplementationOnce(() => Promise.resolve('any_token'))
+
+    const accessToken = await sut.encrypt('any_id')
+
+    expect(accessToken).toBe('any_token')
+  })
 })
