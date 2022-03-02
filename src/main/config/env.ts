@@ -17,3 +17,7 @@ export const databaseConfig = {
 export const appConfig = {
   port: Number(process.env.PORT) || 5050
 }
+
+export const jwtConfig = {
+  secret: process.env.JWT_SECRET || 'tj67O==5H'
+}
