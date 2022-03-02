@@ -1,6 +1,15 @@
 import bcrypt from 'bcrypt'
 import { BcryptAdapter } from './bcrypt-adapter'
 
+jest.mock('bcrypt', () => ({
+  async hash(): Promise<string> {
+    return new Promise((resolve) => resolve('hash'))
+  },
+  async compare(): Promise<boolean> {
+    return new Promise((resolve) => resolve(true))
+  }
+}))
+
 const salt = 12
 
 const makeSut = (): BcryptAdapter => {
@@ -50,5 +59,16 @@ describe('Bcrypt Adapter', () => {
     const isValid = await sut.compare('any_value', 'any_hash')
 
     expect(isValid).toBe(true)
+  })
+
+  it('Should return false when compare fails', async () => {
+    const sut = makeSut()
+    jest
+      .spyOn(bcrypt, 'compare')
+      .mockImplementationOnce(() => Promise.resolve(false))
+
+    const isValid = await sut.compare('any_value', 'any_hash')
+
+    expect(isValid).toBe(false)
   })
 })
