@@ -36,6 +36,7 @@ export class LoginController implements Controller {
 
       return ok({ accessToken })
     } catch (error: any) {
+      // console.error(error)
       return serverError(error)
     }
   }
