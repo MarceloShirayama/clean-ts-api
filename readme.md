@@ -42,9 +42,13 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 - DDD
 - Conventional Commits
 - GitFlow
+- Modular Design
+- Dependency Diagrams
+- Use Cases
 
 > ## Bibliotecas e ferramentas utilizadas:
 
+- NPM
 - Typescript
 - Git
 - <strike>Docker</strike>
@@ -61,6 +65,8 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 - Standard Javascript Style
 - <strike>Sucrase</strike>
 - ts-node-dev
+- Rimraf
+- In-Memory MongoDb Server
 
 > ## Features abordadas:
 
