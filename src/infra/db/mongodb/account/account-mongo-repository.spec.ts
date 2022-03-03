@@ -61,7 +61,6 @@ describe('Account Mongo Repository', () => {
     const account = await sut.loadByEmail('any_email@mail.com')
 
     expect(account).toBeFalsy()
-    expect(account).toBeNull()
   })
 
   it('Should update the account accessToken on updateAccessToken success', async () => {
