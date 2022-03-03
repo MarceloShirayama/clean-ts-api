@@ -1,7 +1,7 @@
 {
   "name": "clean-ts-api",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "NodeJs Rest API using TDD, Clean Architecture and Typescript",
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only src/main/server.ts",
@@ -17,8 +17,14 @@
     "test:staged": "npm test",
     "test:ci": "npm test -- --coverage"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "nodejs",
+    "rest api",
+    "tdd",
+    "clean architecture",
+    "typescript"
+  ],
+  "author": "Marcelo Shirayama",
   "license": "ISC",
   "devDependencies": {
     "@shelf/jest-mongodb": "2.2.0",
