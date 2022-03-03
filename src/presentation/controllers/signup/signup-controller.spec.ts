@@ -34,7 +34,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeAddAccount = () => {
   class AddAccountStub implements AddAccount {
-    async add(account: AddAccountModel): Promise<AccountModel> {
+    async add(account: AddAccountModel): Promise<AccountModel | null> {
       return new Promise((resolve) => resolve(makeFakeAccount()))
     }
   }
@@ -95,6 +95,18 @@ describe('SignUp Controller', () => {
       email: 'any_email@mail.com',
       password: 'any_password'
     })
+  })
+
+  it('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(null)
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse.statusCode).toBe(403)
+    expect(httpResponse.body).toEqual(
+      new Error('The received email is already in use')
+    )
   })
 
   it('Should return 200 if valid data is provided', async () => {
