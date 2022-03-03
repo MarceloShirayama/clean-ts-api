@@ -55,5 +55,15 @@ describe('Login Routes', () => {
         })
         .expect(200)
     })
+
+    it('Should return 401 with invalid credentials', async () => {
+      const response = await supertest(app).post('/api/login').send({
+        email: 'john@mail.com',
+        password: '123456'
+      })
+
+      expect(response.statusCode).toEqual(401)
+      expect(response.body.error).toEqual('Unauthorized')
+    })
   })
 })
